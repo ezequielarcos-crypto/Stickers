@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>StickerLab · Stickers para WhatsApp</title>
+  <meta name="description" content="Creá stickers para WhatsApp desde el navegador: recorte libre o poligonal, lazo automático con IA, quitar fondo, borde, texto, emojis y exportación del paquete.">
+  <meta name="theme-color" content="#0b7a6c">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bangers&family=Fredoka:wght@600&family=Lobster&family=Luckiest+Guy&family=Pacifico&family=Permanent+Marker&display=swap">
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/main.js"></script>
+</head>
+<body>
+  <!-- ============ INICIO ============ -->
+  <section class="view" id="view-home">
+    <header class="topbar">
+      <div class="brand"><img src="icons/icon.svg" alt="" width="30" height="30"><span>StickerLab</span></div>
+      <div class="spacer"></div>
+      <button class="btn ghost small" id="btn-install" hidden>Instalar app</button>
+    </header>
+    <main class="scroll">
+      <div class="dropzone" id="dropzone">
+        <div class="dz-art" aria-hidden="true">
+          <div class="dz-sticker">😎</div>
+        </div>
+        <h2>Creá un sticker</h2>
+        <p>Elegí una foto, sacá una con la cámara o pegala con <kbd>Ctrl</kbd>+<kbd>V</kbd>. También podés arrastrarla acá.</p>
+        <div class="dz-actions">
+          <label class="btn primary" data-icon="image"><input type="file" accept="image/*" id="file-input" hidden>Elegir imagen</label>
+          <label class="btn" data-icon="camera"><input type="file" accept="image/*" capture="environment" id="camera-input" hidden>Cámara</label>
+          <button class="btn" data-icon="text" id="btn-text-only">Solo texto</button>
+        </div>
+      </div>
+
+      <div class="section-head">
+        <h2>Mis paquetes</h2>
+        <button class="btn small" data-icon="plus" id="btn-new-pack">Paquete</button>
+      </div>
+      <div id="pack-list" class="pack-list"></div>
+
+      <details class="help">
+        <summary>¿Cómo paso los stickers a WhatsApp?</summary>
+        <ol>
+          <li><b>Android/iPhone (rápido):</b> en el paquete tocá un sticker → <i>Compartir</i> → WhatsApp. Llega como sticker; mantenelo presionado y elegí <i>Añadir a Favoritos</i>.</li>
+          <li><b>Paquete completo:</b> exportá el <code>.wastickers</code> (mínimo 3 stickers) y abrilo con una app importadora de paquetes para WhatsApp (buscá “wastickers” en tu tienda de apps).</li>
+          <li><b>WhatsApp Web / Escritorio:</b> descargá los <code>.webp</code> y arrastralos a un chat: se envían como stickers.</li>
+        </ol>
+        <p class="muted">Todo se procesa en tu dispositivo: tus fotos no se suben a ningún servidor.</p>
+      </details>
+    </main>
+  </section>
+
+  <!-- ============ RECORTAR ============ -->
+  <section class="view" id="view-cut" hidden>
+    <header class="topbar">
+      <button class="icon-btn" data-icon="back" id="cut-back" title="Volver" aria-label="Volver"></button>
+      <h1 class="title">Recortar</h1>
+      <div class="spacer"></div>
+      <button class="icon-btn" data-icon="undo" id="cut-undo" title="Deshacer (Ctrl+Z)" aria-label="Deshacer"></button>
+      <button class="icon-btn" data-icon="redo" id="cut-redo" title="Rehacer (Ctrl+Y)" aria-label="Rehacer"></button>
+      <button class="btn primary small" id="cut-next">Siguiente</button>
+    </header>
+    <div class="stage" id="cut-stage">
+      <canvas id="cut-canvas" data-tool="lasso"></canvas>
+      <div class="stage-float left">
+        <button class="chip" data-icon="fit" id="cut-fit" title="Encuadrar">Encuadrar</button>
+        <button class="chip" data-icon="eye" id="cut-show-removed" aria-pressed="false" title="Mostrar lo que quitaste">Ver quitado</button>
+      </div>
+      <div class="hint" id="cut-hint"></div>
+      <div class="busy" id="cut-busy" hidden>
+        <div class="spinner"></div>
+        <p id="cut-busy-text">Procesando…</p>
+        <div class="progress"><div id="cut-busy-bar"></div></div>
+      </div>
+    </div>
+    <div class="options" id="cut-options"></div>
+    <nav class="toolbar" id="cut-tools" aria-label="Herramientas de recorte">
+      <button class="tool magic" data-icon="sparkles" data-action="auto-bg">Quitar fondo</button>
+      <button class="tool" data-icon="aiobject" data-tool="aiobject">Lazo auto</button>
+      <button class="tool" data-icon="lasso" data-tool="lasso">Lazo libre</button>
+      <button class="tool" data-icon="polygon" data-tool="polygon">Lazo lineal</button>
+      <button class="tool" data-icon="wand" data-tool="wand">Varita</button>
+      <button class="tool" data-icon="erase" data-tool="erase">Borrador</button>
+      <button class="tool" data-icon="restore" data-tool="restore">Restaurar</button>
+      <button class="tool" data-icon="rect" data-tool="rect">Rectángulo</button>
+      <button class="tool" data-icon="ellipse" data-tool="ellipse">Círculo</button>
+      <button class="tool" data-icon="pan" data-tool="pan">Mover</button>
+      <button class="tool" data-icon="adjust" data-tool="refine">Refinar</button>
+    </nav>
+  </section>
+
+  <!-- ============ DECORAR ============ -->
+  <section class="view" id="view-compose" hidden>
+    <header class="topbar">
+      <button class="icon-btn" data-icon="back" id="compose-back" title="Volver al recorte" aria-label="Volver"></button>
+      <h1 class="title">Decorar</h1>
+      <div class="spacer"></div>
+      <span class="size-badge" id="compose-size" title="Tamaño estimado del sticker"></span>
+      <button class="btn primary small" data-icon="check" id="compose-save">Guardar</button>
+    </header>
+    <div class="stage compose-stage" id="compose-stage">
+      <canvas id="compose-canvas"></canvas>
+    </div>
+    <div class="panel" id="compose-panel"></div>
+    <nav class="tabs" id="compose-tabs" aria-label="Opciones de decoración">
+      <button class="tab" data-icon="layers" data-tab="adjust">Ajustar</button>
+      <button class="tab" data-icon="border" data-tab="border">Borde</button>
+      <button class="tab" data-icon="text" data-tab="text">Texto</button>
+      <button class="tab" data-icon="smile" data-tab="emoji">Emoji</button>
+      <button class="tab" data-icon="adjust" data-tab="filters">Filtros</button>
+      <button class="tab" data-icon="shadow" data-tab="shadow">Sombra</button>
+      <button class="tab" data-icon="bg" data-tab="bg">Fondo</button>
+    </nav>
+  </section>
+
+  <!-- ============ PAQUETE ============ -->
+  <section class="view" id="view-pack" hidden>
+    <header class="topbar">
+      <button class="icon-btn" data-icon="back" id="pack-back" title="Volver" aria-label="Volver"></button>
+      <h1 class="title" id="pack-title">Paquete</h1>
+      <div class="spacer"></div>
+      <button class="icon-btn danger" data-icon="trash" id="pack-delete" title="Eliminar paquete" aria-label="Eliminar paquete"></button>
+    </header>
+    <main class="scroll">
+      <div class="pack-form">
+        <label>Nombre del paquete<input id="pack-name" maxlength="128" placeholder="Mis stickers"></label>
+        <label>Autor<input id="pack-author" maxlength="128" placeholder="Tu nombre"></label>
+      </div>
+      <div class="pack-meta" id="pack-meta"></div>
+      <div class="sticker-grid" id="sticker-grid"></div>
+      <div class="pack-actions">
+        <label class="btn" data-icon="plus"><input type="file" accept="image/*" id="pack-file-input" hidden>Nuevo sticker</label>
+        <button class="btn whatsapp" data-icon="whatsapp" id="pack-export">Exportar a WhatsApp</button>
+      </div>
+    </main>
+  </section>
+
+  <!-- ============ DIÁLOGOS ============ -->
+  <dialog id="dlg-save" class="sheet">
+    <form method="dialog">
+      <h3>Guardar sticker</h3>
+      <div class="save-preview"><img id="save-img" alt="Vista previa del sticker"></div>
+      <p class="muted center" id="save-info"></p>
+      <label>Paquete
+        <select id="save-pack"></select>
+      </label>
+      <label id="save-new-wrap" hidden>Nombre del nuevo paquete<input id="save-new-name" maxlength="128" placeholder="Mis stickers"></label>
+      <label>Emojis relacionados (hasta 3, los usa WhatsApp para sugerirlo)
+        <div class="emoji-pick" id="save-emojis"></div>
+      </label>
+      <div class="dlg-actions">
+        <button value="cancel" class="btn ghost">Cancelar</button>
+        <button value="share" class="btn" data-icon="share" id="save-share">Compartir</button>
+        <button value="save" class="btn primary" data-icon="check">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-sticker" class="sheet">
+    <form method="dialog">
+      <div class="save-preview"><img id="st-img" alt="Sticker"></div>
+      <p class="muted center" id="st-info"></p>
+      <div class="action-list">
+        <button value="share" class="btn whatsapp" data-icon="whatsapp">Compartir a WhatsApp</button>
+        <button value="download" class="btn" data-icon="download">Descargar .webp</button>
+        <button value="png" class="btn" data-icon="download">Descargar .png</button>
+        <button value="copy" class="btn" data-icon="copy">Copiar imagen</button>
+        <button value="tray" class="btn" data-icon="star">Usar como ícono del paquete</button>
+        <button value="edit" class="btn" data-icon="edit">Editar una copia</button>
+        <button value="delete" class="btn danger" data-icon="trash">Eliminar</button>
+      </div>
+      <div class="dlg-actions"><button value="cancel" class="btn ghost">Cerrar</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-export" class="sheet">
+    <form method="dialog">
+      <h3>Exportar a WhatsApp</h3>
+      <div id="export-issues"></div>
+      <div class="action-list">
+        <button value="share-all" class="btn whatsapp" data-icon="share">
+          <span><b>Compartir stickers</b><small>Elegí WhatsApp: llegan como stickers y los guardás en Favoritos.</small></span>
+        </button>
+        <button value="wastickers" class="btn" data-icon="download" id="export-wa">
+          <span><b>Descargar .wastickers</b><small>Paquete completo para apps importadoras de WhatsApp.</small></span>
+        </button>
+        <button value="webp-zip" class="btn" data-icon="download">
+          <span><b>Descargar ZIP de .webp</b><small>Para arrastrarlos a WhatsApp Web o Escritorio.</small></span>
+        </button>
+        <button value="dev-zip" class="btn" data-icon="download">
+          <span><b>ZIP para desarrolladores</b><small>Formato <code>contents.json</code> del proyecto oficial WhatsApp/stickers.</small></span>
+        </button>
+      </div>
+      <div class="dlg-actions"><button value="cancel" class="btn ghost">Cerrar</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="dlg-confirm" class="sheet small">
+    <form method="dialog">
+      <p id="confirm-text"></p>
+      <div class="dlg-actions">
+        <button value="cancel" class="btn ghost">Cancelar</button>
+        <button value="ok" class="btn danger" id="confirm-ok">Eliminar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="drop-overlay" id="drop-overlay" hidden><p>Soltá la imagen para crear un sticker</p></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
