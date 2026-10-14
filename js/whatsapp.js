@@ -2,11 +2,11 @@
 //
 // Un sitio web no puede instalar un paquete en WhatsApp por sí mismo (eso requiere una app
 // nativa con el SDK de WhatsApp). Ofrecemos las vías que sí funcionan desde el navegador:
-//   1. Compartir el .webp con la hoja de compartir del sistema → WhatsApp lo envía como sticker
-//      y se puede guardar en Favoritos.
+//   1. Compartir el .webp con la hoja de compartir del sistema. Ojo: WhatsApp para Android lo
+//      recibe como imagen, no como sticker.
 //   2. Descargar un paquete .wastickers (ZIP con title.txt, author.txt, tray.png y los .webp)
 //      que se importa a WhatsApp con una app importadora de paquetes.
-//   3. WhatsApp Web / Escritorio: arrastrar los .webp a un chat los envía como stickers.
+//   3. WhatsApp Web / Escritorio: arrastrar los .webp a un chat (deberían enviarse como stickers).
 
 import { createZip } from './zip.js';
 import { makeTrayIcon, MAX_STICKER_BYTES, MAX_TRAY_BYTES } from './encoder.js';

@@ -48,9 +48,9 @@
       <details class="help">
         <summary>¿Cómo paso los stickers a WhatsApp?</summary>
         <ol>
-          <li><b>Android/iPhone (rápido):</b> en el paquete tocá un sticker → <i>Compartir</i> → WhatsApp. Llega como sticker; mantenelo presionado y elegí <i>Añadir a Favoritos</i>.</li>
+          <li><b>Android:</b> WhatsApp recibe los archivos compartidos desde el navegador como <i>imagen</i>, no como sticker. Para convertirla, abrí la imagen en el chat → menú ⋮ → <i>Crear sticker</i> (si tu versión de WhatsApp lo tiene).</li>
           <li><b>Paquete completo:</b> exportá el <code>.wastickers</code> (mínimo 3 stickers) y abrilo con una app importadora de paquetes para WhatsApp (buscá “wastickers” en tu tienda de apps).</li>
-          <li><b>WhatsApp Web / Escritorio:</b> descargá los <code>.webp</code> y arrastralos a un chat: se envían como stickers.</li>
+          <li><b>WhatsApp Web / Escritorio:</b> descargá los <code>.webp</code> y arrastralos a un chat: deberían enviarse como stickers.</li>
         </ol>
         <p class="muted">Todo se procesa en tu dispositivo: tus fotos no se suben a ningún servidor.</p>
       </details>
@@ -168,7 +168,7 @@
       <div class="save-preview"><img id="st-img" alt="Sticker"></div>
       <p class="muted center" id="st-info"></p>
       <div class="action-list">
-        <button value="share" class="btn whatsapp" data-icon="whatsapp">Compartir a WhatsApp</button>
+        <button value="share" class="btn whatsapp" data-icon="share">Compartir</button>
         <button value="download" class="btn" data-icon="download">Descargar .webp</button>
         <button value="png" class="btn" data-icon="download">Descargar .png</button>
         <button value="copy" class="btn" data-icon="copy">Copiar imagen</button>
@@ -186,7 +186,7 @@
       <div id="export-issues"></div>
       <div class="action-list">
         <button value="share-all" class="btn whatsapp" data-icon="share">
-          <span><b>Compartir stickers</b><small>Elegí WhatsApp: llegan como stickers y los guardás en Favoritos.</small></span>
+          <span><b>Compartir stickers</b><small>Envía los .webp a cualquier app. En WhatsApp para Android llegan como imagen.</small></span>
         </button>
         <button value="wastickers" class="btn" data-icon="download" id="export-wa">
           <span><b>Descargar .wastickers</b><small>Paquete completo para apps importadoras de WhatsApp.</small></span>

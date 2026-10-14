@@ -35,11 +35,13 @@ las fotos no se suben a ningún servidor. Es una PWA, así que se puede instalar
 Un sitio web no puede instalar un paquete en WhatsApp por sí solo (eso requiere una app nativa con el SDK
 de WhatsApp). StickerLab ofrece las vías que sí funcionan desde el navegador:
 
-1. **Compartir (Android/iPhone):** en el paquete tocá un sticker → *Compartir a WhatsApp*. Llega como sticker;
-   mantenelo presionado en el chat y elegí *Añadir a Favoritos*. También podés compartir todos juntos.
+1. **Compartir:** envía el `.webp` con la hoja de compartir del sistema. Probado en Android con Chrome:
+   **WhatsApp lo recibe como imagen, no como sticker.** Si tu WhatsApp tiene la opción, abrí la imagen en
+   el chat → menú ⋮ → *Crear sticker*.
 2. **Archivo `.wastickers`:** paquete completo (`title.txt`, `author.txt`, `tray.png` y los `.webp`)
    para abrir con una app importadora de paquetes de WhatsApp.
-3. **WhatsApp Web / Escritorio:** descargá el ZIP de `.webp` y arrastrá los archivos a un chat.
+3. **WhatsApp Web / Escritorio:** descargá el ZIP de `.webp` y arrastrá los archivos a un chat (deberían
+   enviarse como stickers; no está probado).
 4. **ZIP para desarrolladores:** `contents.json` + carpeta en el formato del proyecto oficial
    [WhatsApp/stickers](https://github.com/WhatsApp/stickers), para compilar tu propia app de stickers.
 
